@@ -1,10 +1,9 @@
 (ns wonderland-number.finder)
 
 (defn wonderland-number? [n]
-  (letfn [(same-digits? [n1]
-            (let [s1 (set (str n1))
-                  s2 (set (str n))]
-              (= s1 s2)))]
+  (letfn [(same-digits? [n1] (let [s1 (set (str n1))
+                                   s2 (set (str n))]
+                               (= s1 s2)))]
     (and (same-digits? (* n 2))
          (same-digits? (* n 3))
          (same-digits? (* n 4))
