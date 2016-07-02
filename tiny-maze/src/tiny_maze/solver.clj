@@ -1,20 +1,32 @@
 (ns tiny-maze.solver)
 
-(defn value-at [maze x y]
-  ((maze y) x))
+(defn m-get
+  "Get the value in a maze. Returns nil if out-of-bounds."
+  [maze x y]
+  (if (and (>= (count maze) y)
+           (>= (count (maze y)) x))
+    ((maze y) x)
+    nil))
+(defn m-set "Set the value in a maze."
+  [maze x y v] (assoc-in maze [y x] v))
 
-(defn open? [maze x y]
-  (some? (#{:S 1 :E} (value-at maze x y))))
+(defn neighbours
+  "Find the coords for cells adjecent to the provided coord."
+  [x y]
+  (let [moves [[ 1  0]
+               [-1  0]
+               [ 0  1]
+               [ 0 -1]]]
+    (map (fn [[dx dy]] [(+ dx x) (+ dy y)]) moves)))
+
+(defn open?
+  "Check if a cell is 'open' for passage"
+  [maze x y] (some? (#{:S 1 :E} (m-get maze x y))))
+
+(defn end?
+  "Check if a cell is the end of the maze"
+  [maze x y] (= :E (m-get maze x y)))
 
 (defn do-solve-maze [ctx maze])
 
-(defn find-start [maze]
-  (let [coords    (for [y (range (count maze))
-                        x (range (count (maze y)))] [x y])
-        predicate (fn [[x y]] (= :S (value-at maze x y)))]
-    (first (filter predicate coords))))
-
-(defn solve-maze [maze]
-  (do-solve-maze {:visited #{}
-                  :current (find-start maze)}
-                 maze))
+(defn solve-maze [maze] )
