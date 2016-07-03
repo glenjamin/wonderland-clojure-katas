@@ -3,7 +3,9 @@
 (defn m-get
   "Get the value in a maze. Returns nil if out-of-bounds."
   [maze x y]
-  (if (and (>= (count maze) y)
+  (if (and (>= x 0)
+           (>= y 0)
+           (>= (count maze) y)
            (>= (count (maze y)) x))
     ((maze y) x)
     nil))
@@ -27,6 +29,13 @@
   "Check if a cell is the end of the maze"
   [maze x y] (= :E (m-get maze x y)))
 
-(defn do-solve-maze [ctx maze])
+(defn do-solve-maze [{:keys [maze pos trail] :as state}]
+  (if (:done state)
+    state
+    (let [lookup     (fn [[x y]] [x y (m-get maze x y)])
+          filter-fn  (fn [[_ _ v]] (not (nil? v)))
+          neighbours (filter filter-fn (map lookup (apply neighbours pos)))]
+      (assoc state :neighbours neighbours))))
+
 
 (defn solve-maze [maze] )

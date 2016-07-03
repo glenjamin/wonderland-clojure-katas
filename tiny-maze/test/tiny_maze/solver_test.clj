@@ -2,6 +2,14 @@
   (:require [clojure.test :refer :all]
             [tiny-maze.solver :refer :all]))
 
+(def small-maze [[:S 0 1]
+                 [1  0 1]
+                 [1  0 :E]])
+(def large-maze [[:S 0 0  1]
+                 [1  1 0  0]
+                 [1  0 0 1]
+                 [1  1 0 :E]])
+
 (deftest test-solve-maze
   (testing "can find way to exit with 3x3 maze"
     (let [maze [[:S 0 1]
