@@ -66,3 +66,30 @@
         solution (first (drop-while (complement pred) permutations))]
     (vec (map vec (partition 3 solution)))))
 
+(defn siamese-magic-square
+  "https://en.wikipedia.org/wiki/Siamese_method.
+  On my machine: 1.2 ms. We have a winner!"
+  [values]
+  (assert (= 9 (count values)))
+  (let [square (vec (map vec (partition 3 (repeat 9 nil))))]
+    (letfn [(get-value [square [x y]] (get-in square [y x]))
+            (set-value [square [x y] v] (update-in square [y x] (constantly v)))]
+      (loop [pos [1 0]
+             square square
+             values (sort values)]
+        (if (empty? values)
+          square ;; solution found
+          (let [[head & rest] values
+                value-at-pos (get-value square pos)]
+            (if value-at-pos
+              (recur (map #(mod % 3) (mapv + pos [-1 2]))
+                     square
+                     values)
+              (recur (map #(mod % 3) (mapv + pos [1 -1]))
+                     (set-value square pos head)
+                     rest))))))))
+
+
+
+
+
