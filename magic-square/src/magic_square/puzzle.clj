@@ -21,7 +21,45 @@
         diagonal-sums (map #(reduce + %) (values->diagonals values))]
     (concat row-sums col-sums diagonal-sums)))
 
-(defn magic-square [values]
+(defn sum [values] (reduce + values))
+(defn make-square [input] (vec (map vec (partition 3 input))))
+(defn row-sum [square idx]
+  (reduce + (square idx)))
+(defn col-sum [square idx]
+  (reduce + (map #(get % idx) square)))
+(defn diag-sum [square direction]
+  (if (= direction :right)
+    (reduce + (vector (get-in square [0 0])
+                      (get-in square [1 1])
+                      (get-in square [2 2])))
+    (reduce + (vector (get-in square [0 2])
+                      (get-in square [1 1])
+                      (get-in square [2 0])))))
+(defn solution? [square]
+  (let [row0 (row-sum square 0)]
+    (and (= row0 (row-sum square 1))
+         (= row0 (row-sum square 2))
+         (= row0 (col-sum square 0))
+         (= row0 (col-sum square 1))
+         (= row0 (col-sum square 2))
+         (= row0 (diag-sum square :right))
+         (= row0 (diag-sum square :left)))))
+
+(defn magic-square
+  "Faster implementation. Eagerly returns false when finding a row/col/diag that is not the
+  sum of the first row.
+  On my machine: 0.4 seconds."
+  [values]
+  (let [permutations (comb/permutations values)]
+    (first
+     (drop-while (complement solution?)
+           (map make-square permutations)))))
+
+(defn slow-magic-square
+  "Original implementation. Slow - fully evaluates each permuation before deciding if
+  it's the solution or not.
+  On my machine: ~2.5 seconds."
+  [values]
   (let [permutations (comb/permutations values)
         pred (fn [values] (let [sums (calc-square-sums values)]
                             (= 1 (count (distinct sums)))))
