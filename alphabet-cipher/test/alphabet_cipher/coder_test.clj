@@ -22,3 +22,9 @@
            (decipher "opkyfipmfmwcvqoklyhxywgeecpvhelzg" "thequickbrownfoxjumpsoveralazydog")))
     (is (= "scones"
            (decipher "hcqxqqtqljmlzhwiivgbsapaiwcenmyu" "packmyboxwithfivedozenliquorjugs")))))
+
+(deftest test-rotate
+  (is (= (rotate [1 2 3 4]) [2 3 4 1])))
+
+(deftest test-uncycle
+  (is (= (uncycle "sconessconessconessconessconessco") "scones")))
